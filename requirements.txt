@@ -1,0 +1,8 @@
+opencv-python
+dlib
+mediapipe
+tensorflow
+scikit-learn
+matplotlib
+pyqt5
+tqdm
