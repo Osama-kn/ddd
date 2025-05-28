@@ -6,3 +6,4 @@ scikit-learn
 matplotlib
 pyqt5
 tqdm
+pandas

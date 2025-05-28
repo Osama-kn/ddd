@@ -2,55 +2,37 @@ import os
 import cv2
 import numpy as np
 import pickle
+from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 
 # Paths
-DATASET_DIR = "data/DriverDrowsinessDataset"
-OUTPUT_PATH = "data/processed_data.pkl"
+DATA_DIR = 'data/DDD'
+CATEGORIES = ['Drowsy', 'NotDrowsy']
+IMG_SIZE = 100
 
-# Label mapping
-LABELS = {
-    "notdrowsy": 0,
-    "drowsy": 1
-}
+data = []
+labels = []
 
-# Image size
-IMG_SIZE = (64, 64)
-
-# Prepare arrays
-X = []
-y = []
-
-# Loop over folders
-for label_name, label in LABELS.items():
-    folder_path = os.path.join(DATASET_DIR, label_name)
-    if not os.path.exists(folder_path):
-        print(f"⚠️ Warning: {folder_path} does not exist, skipping.")
-        continue
-
-    for filename in tqdm(os.listdir(folder_path), desc=f"Processing {label_name}"):
-        file_path = os.path.join(folder_path, filename)
+for category in CATEGORIES:
+    folder_path = os.path.join(DATA_DIR, category)
+    for img_name in tqdm(os.listdir(folder_path), desc=f"Loading {category}"):
         try:
-            img = cv2.imread(file_path)
-            if img is None:
-                continue
-            img = cv2.resize(img, IMG_SIZE)
-            X.append(img)
-            y.append(label)
+            img_path = os.path.join(folder_path, img_name)
+            image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+            if image is not None:
+                image = cv2.resize(image, (IMG_SIZE, IMG_SIZE))
+                data.append(image)
+                labels.append(category)
         except Exception as e:
-            print(f"Failed to process {file_path}: {e}")
+            print(f"Error loading {img_path}: {e}")
 
-# Convert to numpy arrays
-X = np.array(X, dtype="float32")
-y = np.array(y, dtype="int32")
+# Convert to NumPy arrays
+X = np.array(data).reshape(-1, IMG_SIZE, IMG_SIZE, 1) / 255.0
+y = LabelEncoder().fit_transform(labels)
 
-print(f"✅ Loaded {len(X)} images with labels.")
+# Save preprocessed data
+os.makedirs('data/processed', exist_ok=True)
+with open('data/processed/processed_data.pkl', 'wb') as f:
+    pickle.dump((X, y), f)
 
-
-# Save processed data
-os.makedirs("data", exist_ok=True)
-
-with open(OUTPUT_PATH, "wb") as f:
-    pickle.dump({"X": X, "y": y}, f)
-
-print(f"✅ Data processing complete. Saved to {OUTPUT_PATH}")
+print(f"✅ Preprocessing complete. Saved {len(X)} samples to data/processed/processed_data.pkl")
