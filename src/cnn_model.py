@@ -1,1 +1,0 @@
-# (Optional) CNN classifier

@@ -1,3 +1,32 @@
-/data
-/models
-*venv
+# Datasets and trained models (download / train locally)
+/data/
+/datasets/
+/models/
+/reports/
+*.h5
+*.keras
+*.pkl
+
+# Videos you record locally
+*.mp4
+*.avi
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Environments
+*venv*/
+.env
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Kaggle credentials
+kaggle.json

@@ -1,1 +1,0 @@
-# Helper functions (drawing, preprocessing, etc.)

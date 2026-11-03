@@ -1,1 +1,0 @@
-# EAR, LAR, PERCLOS calculations
